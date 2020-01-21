@@ -130,6 +130,7 @@ dmypy.json
 
 # c++ Stuff
 bin/
+data/
 integrate
 
 #vim 
