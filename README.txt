@@ -27,3 +27,6 @@ Data View Instructions:
 			- $ python getXi1.py <path/to/file>
 		- Command line options can be shown by running
 			- $ python getXi1.py --help
+
+	- If you want to generate the figures of all the dataruns on seperate plots use something like from the pyUtils directory
+		- $ ls data/*.binary | awk '{split($0,a,"/"); print a[2]}' | xargs -I{} ./ViewCOutput.py data/{} -o Figures/Multi_{}.pdf

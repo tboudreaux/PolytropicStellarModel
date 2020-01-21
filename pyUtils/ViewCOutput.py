@@ -52,7 +52,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot Data')
     parser.add_argument('files', metavar='<path/to/data/files>', type=str, nargs='+', help="Files to plot")
     parser.add_argument('-o', '--output', type=str, default="Figures/ThetaXi.pdf", metavar='<path/to/output/file>', help='output location')
-    parser.add_argument('-s', '--shared',  action='store_false', help='place all polytropes on the same plot')
     parser.add_argument('-r', '--root',  action='store_true', help='Also plot the crosshairs showing xi1')
 
     args = parser.parse_args()
@@ -60,33 +59,17 @@ if __name__ == '__main__':
     N, states = extract_theta_dot_xi(dataFiles)
 
     set_style()
-    if args.shared:
-        fig, ax = plt.subplots(1, 1, figsize=(10, 7))
-        for n, state in zip(N, states):
-            ax.plot(state[0], state[1], label=r"$\theta_{{n={}}}$".format(n))
-            ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{n={}}}$".format(n))
-        if args.root:
-            xi1Approx, theta1Approx = find_root(state[0], state[1])
-            ax.axvline(x=xi1Approx, linestyle=':', color='black', alpha=0.5)
-            ax.axhline(y=0, linestyle=':', color='black', alpha=0.5)
-        ax.set_xlabel(r'$\xi$', fontsize=17)
-        ax.set_ylabel(r'$\theta$, $\frac{d\theta}{d\xi}$', fontsize=17)
-        plt.legend()
 
-        plt.savefig(args.output, bbox_inches='tight')
-    else:
-        for n, state in zip(N, states):
-            fig, ax = plt.subplots(1, 1, figsize=(10, 7))
-            ax.plot(state[0], state[1], label=r"$\theta_{{n={}}}$".format(n))
-            ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}right)_{{n={}}}$".format(n))
-            ax.set_xlabel(r'$\xi$', fontsize=17)
-            ax.set_ylabel(r'$\theta$, $\frac{d\theta}{d\xi}$', fontsize=17)
-            if args.root:
-                xi1Approx, theta1Approx = find_root(state[0], state[1])
-                ax.axvline(x=xi1Approx, linestyle=':', color='black', alpha=0.5)
-                ax.axhline(y=0, linestyle=':', color='black', alpha=0.5)
-            plt.legend()
-            filename = args.output.split('.')
-            filename[0] = "{}_n={}".format(filename[0])
-            filename = '.'.join(filename)
-            plt.savefig(filename, bbox_inches='tight')
+    fig, ax = plt.subplots(1, 1, figsize=(10, 7))
+    for n, state in zip(N, states):
+        ax.plot(state[0], state[1], label=r"$\theta_{{n={}}}$".format(n))
+        ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{n={}}}$".format(n))
+    if args.root:
+        xi1Approx, theta1Approx = find_root(state[0], state[1])
+        ax.axvline(x=xi1Approx, linestyle=':', color='black', alpha=0.5)
+        ax.axhline(y=0, linestyle=':', color='black', alpha=0.5)
+    ax.set_xlabel(r'$\xi$', fontsize=17)
+    ax.set_ylabel(r'$\theta$, $\frac{d\theta}{d\xi}$', fontsize=17)
+    plt.legend()
+
+    plt.savefig(args.output, bbox_inches='tight')
