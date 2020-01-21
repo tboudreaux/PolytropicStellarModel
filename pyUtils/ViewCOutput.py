@@ -3,6 +3,8 @@
 
 
 from readCPython import load_C_output
+from getXi1 import find_root
+
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -48,9 +50,10 @@ def extract_theta_dot_xi(dataFiles):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot Data')
-    parser.add_argument('files', metavar='f', type=str, nargs='+', help="Files to plot")
-    parser.add_argument('--output', '-o', type=str, default="Figures/ThetaXi.pdf", metavar='o', help='output location')
-    parser.add_argument('--shared', type=bool, default='store_false', metavar='s', help='place all polytropes on the same plot')
+    parser.add_argument('files', metavar='<path/to/data/files>', type=str, nargs='+', help="Files to plot")
+    parser.add_argument('-o', '--output', type=str, default="Figures/ThetaXi.pdf", metavar='<path/to/output/file>', help='output location')
+    parser.add_argument('-s', '--shared',  action='store_false', help='place all polytropes on the same plot')
+    parser.add_argument('-r', '--root',  action='store_true', help='Also plot the crosshairs showing xi1')
 
     args = parser.parse_args()
     dataFiles = filter(lambda x: '.binary' in x, args.files)
@@ -62,6 +65,10 @@ if __name__ == '__main__':
         for n, state in zip(N, states):
             ax.plot(state[0], state[1], label=r"$\theta_{{n={}}}$".format(n))
             ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{n={}}}$".format(n))
+        if args.root:
+            xi1Approx, theta1Approx = find_root(state[0], state[1])
+            ax.axvline(x=xi1Approx, linestyle=':', color='black', alpha=0.5)
+            ax.axhline(y=0, linestyle=':', color='black', alpha=0.5)
         ax.set_xlabel(r'$\xi$', fontsize=17)
         ax.set_ylabel(r'$\theta$, $\frac{d\theta}{d\xi}$', fontsize=17)
         plt.legend()
@@ -74,6 +81,10 @@ if __name__ == '__main__':
             ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}right)_{{n={}}}$".format(n))
             ax.set_xlabel(r'$\xi$', fontsize=17)
             ax.set_ylabel(r'$\theta$, $\frac{d\theta}{d\xi}$', fontsize=17)
+            if args.root:
+                xi1Approx, theta1Approx = find_root(state[0], state[1])
+                ax.axvline(x=xi1Approx, linestyle=':', color='black', alpha=0.5)
+                ax.axhline(y=0, linestyle=':', color='black', alpha=0.5)
             plt.legend()
             filename = args.output.split('.')
             filename[0] = "{}_n={}".format(filename[0])
