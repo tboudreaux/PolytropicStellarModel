@@ -131,3 +131,6 @@ dmypy.json
 # c++ Stuff
 bin/
 integrate
+
+#vim 
+*.swp
