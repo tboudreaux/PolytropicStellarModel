@@ -15,5 +15,15 @@ Run Time Instructions:
 
 Data View Instructions:
 	- To generate graphs of the data:
-		 - Use the included notebook <ViewCOutput.ipynb>
-		 - Use the included python script <ViewCOutput.py> 
+		- Use the included script <pyUtils/ViewCOutput.py>
+			- $ python pyUtils/ViewCOutput.py <path/to/fileA> <path/to/fileB>
+			- the script can plot either one data file or multiple
+				- If plotting multiple the script can place them all on one figure
+				  or break them out into seperate figures
+			- Command line options can be shown by running
+				- $ python pyUtils.py --help
+	- To Get the value of Xi1
+		- Use the uncluded script <pyUtils/getXi1.py>
+			- $ python getXi1.py <path/to/file>
+		- Command line options can be shown by running
+			- $ python getXi1.py --help
