@@ -6,7 +6,7 @@ Compilation Instructions:
 	- To compile $ make
 
 Run Time Instructions:
-	- To run $ ./Integrate [n] [h] [xi0] [xif] [itr]
+	- To run $ ./integrate [n] [h] [xi0] [xif] [itr]
   		    n[float]       - polytroic index
   		    h[float]       - integration step size
   	 	    xi0[float]     - initial value of xi to start at
