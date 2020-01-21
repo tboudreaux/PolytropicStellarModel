@@ -1,4 +1,4 @@
-# build C version of nbody simulator
+# build C++ version of a lane-emden integrator
 CC = g++
 CFLAGS = -g -Wall
 HEADERDIRS = src
