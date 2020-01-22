@@ -42,10 +42,13 @@ int main(int argc, const char* argv[]){
 	long int nXi;
 	parsedArgv = new double[argc-1];
 
+
+	// Deal with the compile time options
 	const int pstanot = PSTANOUT;
 	string datadir = STRINGIFY(RDATADIR);
 	const string dirAppend = "/";
 
+	// If directory didn't have / add one
 	if (datadir.compare(datadir.size() - dirAppend.size(), dirAppend.size(), dirAppend)){
 		datadir.append(dirAppend);
 	}
