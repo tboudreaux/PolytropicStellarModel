@@ -4,6 +4,17 @@ Thomas M. Boudreaux
 
 Compilation Instructions:
 	- To compile $ make
+	- There are two compile time arguemnts which may be set
+		- DATADIR will set where that data files are written to (will make the folder to)
+		- PSTANOT will determine if the output is also written to standard output
+			- This is in addition to dumping to a binary file which will always happen
+			- 0 to supress standard output
+			- 1 to print to standard output
+		- Examples of use
+			- $ make PSTANOT=1 DATADIR=results
+				- this will print to standard out and save binaries in a folder called results
+			- $ make
+				- this will use the default values of PSTANOT=0 and DATADIR=data
 
 Run Time Instructions:
 	- To run $ ./integrate [n] [h] [xi0] [xif] [itr]

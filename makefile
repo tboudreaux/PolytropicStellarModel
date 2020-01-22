@@ -3,7 +3,7 @@ CC = g++
 CFLAGS = -g -Wall
 HEADERDIRS = src
 BINDIR = bin
-DATADIR = datatest/
+DATADIR = data
 PSTANOT = 0
 
 default: all
