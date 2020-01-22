@@ -1,6 +1,13 @@
 import numpy as np
 def load_C_output(filename):
-    # Open the file as a byte string
+    """Open the file as a byte string
+
+    Positional Arguments:
+        filename -- path to binary file to read
+    Returns -> state:
+        state -- 2D Numpy array containing [xi, theta, dtheta/dxi]
+
+    """
     with open(filename, 'rb') as f:
         contents = f.read()
     # Read the bytes as a c type double
