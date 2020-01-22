@@ -3,7 +3,9 @@
 #include<fstream>
 #include<complex>
 
-#include"utils.h"
+#include "utils.h"
+#include "integration.h"
+#include "model.h"
 
 using namespace std;
 typedef double (* odeModel)(double vN, double *argv, int argc);
