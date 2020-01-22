@@ -12,8 +12,8 @@ import argparse
 
 import matplotlib as mpl
 
-def set_style():
-    plt.rc('text', usetex=True)
+def set_style(usetex=False):
+    plt.rc('text', usetex=usetex)
     plt.rc('font', family='Serif')
 
 
@@ -53,12 +53,13 @@ if __name__ == '__main__':
     parser.add_argument('files', metavar='<path/to/data/files>', type=str, nargs='+', help="Files to plot")
     parser.add_argument('-o', '--output', type=str, default="Figures/ThetaXi.pdf", metavar='<path/to/output/file>', help='output location')
     parser.add_argument('-r', '--root',  action='store_true', help='Also plot the crosshairs showing xi1')
+    parser.add_argument('-t', '--tex', action='store_true', help='Use the tex rendering engine when plotting')
 
     args = parser.parse_args()
     dataFiles = filter(lambda x: '.binary' in x, args.files)
     N, states = extract_theta_dot_xi(dataFiles)
 
-    set_style()
+    set_style(usetex=args.tex)
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 7))
     for n, state in zip(N, states):
