@@ -1,9 +1,5 @@
 #include "integration.h"
 
-using namespace std;
-
-
-using namespace std;
 typedef double (* odeModel)(double vN, double *argv, int argc);
 
 double rk4(double yN, float h, odeModel model, double *argv, int argc){
