@@ -2,10 +2,14 @@
 #include<cmath>
 #include<fstream>
 #include<complex>
+#include<string>
 
 #include "utils.h"
 #include "integration.h"
 #include "model.h"
+
+#define STRINGIFY2(X) #X
+#define STRINGIFY(X) STRINGIFY2(X)
 
 using namespace std;
 typedef double (* odeModel)(double vN, double *argv, int argc);
@@ -37,6 +41,15 @@ int main(int argc, const char* argv[]){
 	double modelArgv[3];
 	long int nXi;
 	parsedArgv = new double[argc-1];
+
+	const int pstanot = PSTANOUT;
+	string datadir = STRINGIFY(RDATADIR);
+	const string dirAppend = "/";
+
+	if (datadir.compare(datadir.size() - dirAppend.size(), dirAppend.size(), dirAppend)){
+		datadir.append(dirAppend);
+	}
+
 
 	// Convert command line args to doubles
 	for (int arg=0; arg<argc-1; arg++){
@@ -74,15 +87,17 @@ int main(int argc, const char* argv[]){
 
 	// print to stdout for use with ioredirection if one wants to work with a text file
 	//  as opposed to a binary file
-	for(int i = 0; i < nXi; i++){
-		cout << state[0][i] << "," << state[1][i] << "," << state[2][i] << endl;
+	if (pstanot == 1){
+		for(int i = 0; i < nXi; i++){
+			cout << state[0][i] << "," << state[1][i] << "," << state[2][i] << endl;
+		}
 	}
 
 	// Dump the array state to a file
 	// That file is a binary of doubles aranged so that the first nXi*sizeof(double) in bytes
 	// is Xi, the second is theta, and the third is thetadot, therefore the total size of the
 	// file in bytes should be 3*nXi*sizeof(double).
-	save("data/laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, nXi);
+	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, nXi);
 
 	// Release the memory back to the operating system
 	delete parsedArgv;
@@ -93,3 +108,4 @@ int main(int argc, const char* argv[]){
 
 	return 0;
 }
+

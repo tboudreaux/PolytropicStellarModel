@@ -3,19 +3,21 @@ CC = g++
 CFLAGS = -g -Wall
 HEADERDIRS = src
 BINDIR = bin
+DATADIR = datatest/
+PSTANOT = 0
 
 default: all
 
 all: lane-emden.o utils.o model.o integration.o
 	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) -I $(HEADERDIRS) -o integrate lane-emden.o utils.o model.o integration.o
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate lane-emden.o utils.o model.o integration.o
 	@mv *.o $(BINDIR)/
 	@mv integrate $(BINDIR)/
 	@ln -s $(BINDIR)/integrate ./integrate
-	@mkdir -p data
+	@mkdir -p $(DATADIR)
 	
 lane-emden.o: $(HEADERDIRS)/lane-emden.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h
-	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden.cpp
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden.cpp
 
 utils.o: $(HEADERDIRS)/utils.cpp $(HEADERDIRS)/utils.h
 	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/utils.cpp
@@ -27,14 +29,14 @@ integration.o: $(HEADERDIRS)/integration.cpp $(HEADERDIRS)/integration.h
 	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/integration.cpp
 
 cleanData:
-	@rm -r data
-	@mkdir data
+	@rm -r $(DATADIR)
+	@mkdir $(DATADIR)
 
 data:
-	@mkdir -p data
+	@mkdir -p $(DATADIR)
 
 clean:
 	@rm integrate
 	@rm -r $(BINDIR)/
-	@rm -r data
+	@rm -r $(DATADIR)
 
