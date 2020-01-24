@@ -1,10 +1,12 @@
+import matplotlib as mpl
+mpl.use('Agg')
+
 import numpy as np
 import argparse
 import matplotlib.pyplot as plt
 import pandas as pd
 
 
-import matplotlib as mpl
 
 
 def set_style(usetex=False):
@@ -43,25 +45,18 @@ def set_style(usetex=False):
 if __name__ == "__main__":
     # Argument Parser 
     parser = argparse.ArgumentParser(description='Plot Data')
-    parser.add_argument('file', metavar='<path/to/data/files>', type=str, help="Files to plot")
+    parser.add_argument('file', metavar='<path/to/data/files>', type=str, nargs='+', help="Files to plot")
     parser.add_argument('-o', '--output', type=str, default="Figures/ThetaXi.pdf", metavar='<path/to/output/file>', help='output location')
     parser.add_argument('-t', '--tex', action='store_true', help='Use the tex rendering engine when plotting')
 
     args = parser.parse_args()
 
-    data = np.load(args.file)
-
     set_style(usetex=args.tex)
+
     fig, axs = plt.subplots(2, 2, figsize=(20, 20))
-    axs[0][0].plot(data[0], data[1])
-    axs[0][0].plot(data[0], data[2])
 
     axs[0][0].set_xlabel(r"$\xi$", fontsize=17)
     axs[0][0].set_ylabel(r"$\theta$, $\frac{d\theta}{d\xi}$", fontsize=17)
-
-    axs[1][0].plot(data[3], data[4])
-    axs[0][1].plot(data[3], data[5])
-    axs[1][1].plot(data[3], data[6])
 
     axs[1][0].set_xlabel(r"r [cm]", fontsize=17)
     axs[1][0].set_ylabel(r"$\rho$ [g cm$^{-3}$]", fontsize=17)
@@ -71,5 +66,17 @@ if __name__ == "__main__":
 
     axs[1][1].set_xlabel(r"r [cm]", fontsize=17)
     axs[1][1].set_ylabel(r"T [K]", fontsize=17)
+
+    for file in args.file:
+        data = np.load(file)
+
+        axs[0][0].plot(data[0], data[1])
+        axs[0][0].plot(data[0], data[2])
+
+
+        axs[1][0].plot(data[3], data[4])
+        axs[0][1].plot(data[3], data[5])
+        axs[1][1].plot(data[3], data[6])
+
 
     plt.savefig(args.output, bbox_inches='tight')
