@@ -67,6 +67,7 @@ if __name__ == "__main__":
     axs[1][1].set_xlabel(r"r [cm]", fontsize=17)
     axs[1][1].set_ylabel(r"T [K]", fontsize=17)
 
+    # plot each file as a differnt curve
     for file in args.file:
         data = np.load(file)
 

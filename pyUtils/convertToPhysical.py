@@ -135,6 +135,15 @@ def get_mu(X, Y, Z):
     return (1/(2*X+(3/4)*Y+(1/2)*Z))
 
 def get_radius_from_luminosity_teff(LogL, Teff):
+    """ Use the stephan boltzman law to get the radius from luminosity and temperature
+
+    Positional Arguments:
+        LogL -> log10(L/Lsolar)
+        Teff -> Effective Temperature [Kelvin]
+    Returns:
+        Radius in cgs units
+
+    """
     L = L_solar*10**LogL
     return (1/(2*Teff**2))*np.sqrt(L/(np.pi*sigma))
 
@@ -156,12 +165,15 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # Exctract the polytropic index from the file name convention
     n = float(args.path.split('/')[-1].split('_')[1][:-7])
 
+    # Load data from the c dump binary
     state = load_C_output(args.path)
     xi1, thetaXi1 = find_root(state[0], state[1])
     dthetaXdxi1, _ = find_root(state[2], state[1])
 
+    # Select only the portion of the the solution less than the radius of the star
     conditional = state[0] <= xi1
 
     xi = state[0][conditional]
@@ -169,6 +181,8 @@ if __name__ == "__main__":
     dtheta = state[2][conditional]
 
     M = args.mass
+
+    # Select a-priori radius or given luminosity and temperature
     if args.radius:
         R = args.radius
     else:
@@ -178,13 +192,17 @@ if __name__ == "__main__":
     radius = get_radius(R, xi, xi1)
     mu = get_mu(args.X, args.Y, args.Z)
 
+    # Scale quantities to physical
     rho = get_density(M, R, xi1, theta, dthetaXdxi1, n)
     P = get_P(M, R, xi, theta, dtheta, xi1, dthetaXdxi1, n)
     T = get_T(M, R, xi, theta, dtheta, xi1, dthetaXdxi1, n, mu)
 
+    # If output target is not given write to standard output
     if args.output == "NULL":
+        print("xi,theta,dtheta,radius,rho,P,T")
         for x, t, dt, r, rh, p, t in zip(xi, theta, dtheta, radius, rho, P, T):
             print("{},{},{},{},{},{},{}".format(x, t, dt, r, rh, p, t))
     else:
-        output = np.array([xi, theta, dtheta, radius, rho, P, T])
-        np.save(args.output, output)
+        with open(args.output, 'wb') as f:
+            output = np.array([xi, theta, dtheta, radius, rho, P, T])
+            np.save(f, output)
