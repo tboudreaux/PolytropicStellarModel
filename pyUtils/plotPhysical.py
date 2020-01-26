@@ -6,6 +6,8 @@ import argparse
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from cycler import cycler
+
 
 
 
@@ -17,8 +19,11 @@ def set_style(usetex=False):
                   LaTeX to be in the PATH
 
     """
+    default_cycler = (cycler(color=['k', 'b', 'g', 'r']) + cycler(linestyle=['--', ':', '-', '-.']) + cycler(alpha=[0.5, 0.625, 0.75, 0.875]))
+
     plt.rc('text', usetex=usetex)
     plt.rc('font', family='Serif')
+    plt.rc('axes', prop_cycle=default_cycler)
 
 
     mpl.rcParams['figure.figsize'] = [10, 7]
@@ -56,13 +61,13 @@ if __name__ == "__main__":
     fig, axs = plt.subplots(2, 2, figsize=(20, 20))
 
     axs[0][0].set_xlabel(r"$\xi$", fontsize=17)
-    axs[0][0].set_ylabel(r"$\theta$, $\frac{d\theta}{d\xi}$", fontsize=17)
+    axs[0][0].set_ylabel(r"$\theta$", fontsize=17)
 
     axs[1][0].set_xlabel(r"r [cm]", fontsize=17)
     axs[1][0].set_ylabel(r"$\rho$ [g cm$^{-3}$]", fontsize=17)
 
     axs[0][1].set_xlabel(r"r [cm]", fontsize=17)
-    axs[0][1].set_ylabel(r"P [dyne]", fontsize=17)
+    axs[0][1].set_ylabel(r"P [barye]", fontsize=17)
 
     axs[1][1].set_xlabel(r"r [cm]", fontsize=17)
     axs[1][1].set_ylabel(r"T [K]", fontsize=17)
@@ -70,14 +75,16 @@ if __name__ == "__main__":
     # plot each file as a differnt curve
     for file in args.file:
         data = np.load(file)
+        label=file.split('/')[-1].split('.')[0]
 
-        axs[0][0].plot(data[0], data[1])
-        axs[0][0].plot(data[0], data[2])
+        axs[0][0].plot(data[0], data[1], label=label)
+        axs[1][0].plot(data[3], data[4], label=label)
+        axs[0][1].plot(data[3], data[5], label=label)
+        axs[1][1].plot(data[3], data[6], label=label)
 
-
-        axs[1][0].plot(data[3], data[4])
-        axs[0][1].plot(data[3], data[5])
-        axs[1][1].plot(data[3], data[6])
-
+    axs[0][0].legend()
+    axs[0][1].legend()
+    axs[1][0].legend()
+    axs[1][1].legend()
 
     plt.savefig(args.output, bbox_inches='tight')
