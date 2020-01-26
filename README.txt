@@ -41,3 +41,11 @@ Data View Instructions:
 
 	- If you want to generate the figures of all the dataruns on seperate plots use something like from the pyUtils directory
 		- $ ls data/*.binary | awk '{split($0,a,"/"); print a[2]}' | xargs -I{} ./ViewCOutput.py data/{} -o Figures/Multi_{}.pdf
+
+Physical Scaling quantities:
+	- To generate the physical scalings from xi, theta, and dtheta use the python script <pyUtils/convertToPhysical.py>
+		- $ python pyUtils/convertToPhysical.py <path/to/binary/file>
+			- use --help to see command line options
+	- To plot the physical quantities use the python script <pyUtils/plotPhysical.py>
+		- $ python pyUtils/plotPhysical.py <path/to/physically/scaled/data/file> --output <path/to/save/figure>
+			- use --help to see command line options
