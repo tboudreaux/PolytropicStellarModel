@@ -15,6 +15,7 @@ all: lane-emden.o utils.o model.o integration.o
 	@mv integrate $(BINDIR)/
 	@ln -s $(BINDIR)/integrate ./integrate
 	@mkdir -p $(DATADIR)
+	@ln -s ../$(DATADIR) pyUtils/$(DATADIR)
 	
 lane-emden.o: $(HEADERDIRS)/lane-emden.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h
 	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden.cpp
@@ -37,6 +38,7 @@ data:
 
 clean:
 	@rm integrate
+	@rm pyUtils/$(DATADIR)
 	@rm -r $(BINDIR)/
 	@rm -r $(DATADIR)
 
