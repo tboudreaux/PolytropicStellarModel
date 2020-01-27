@@ -8,17 +8,22 @@ PSTANOT = 0
 
 default: all
 
-all: lane-emden.o utils.o model.o integration.o
+all: lane-emden-nonDegenerate.o lane-emden-degenerate.o utils.o model.o integration.o
 	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate lane-emden.o utils.o model.o integration.o
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-nonDegenerate lane-emden.o utils.o model.o integration.o
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-degenerate lane-emden-degenerate.o utils.o model.o integration.o
 	@mv *.o $(BINDIR)/
 	@mv integrate $(BINDIR)/
-	@ln -s $(BINDIR)/integrate ./integrate
+	@ln -s $(BINDIR)/integrate-nonDegenerate ./integrate-nonDegenerate
+	@ln -s $(BINDIR)/integrate-degenerate ./integrate-degenerate
 	@mkdir -p $(DATADIR)
 	@ln -s ../$(DATADIR) pyUtils/$(DATADIR)
 	
-lane-emden.o: $(HEADERDIRS)/lane-emden.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h
-	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden.cpp
+lane-emden-nonDegenerate.o: $(HEADERDIRS)/lane-emden-nonDegenerate.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden-nonDegenerate.cpp
+
+lane-emden-degenerate.o: $(HEADERDIRS)/lane-emden-degenerate.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden-degenerate.cpp
 
 utils.o: $(HEADERDIRS)/utils.cpp $(HEADERDIRS)/utils.h
 	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/utils.cpp
@@ -37,7 +42,8 @@ data:
 	@mkdir -p $(DATADIR)
 
 clean:
-	@rm integrate
+	@rm integrate-nonDegenerate
+	@rm integrate-degenerate
 	@rm pyUtils/$(DATADIR)
 	@rm -r $(BINDIR)/
 	@rm -r $(DATADIR)

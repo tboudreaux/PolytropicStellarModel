@@ -102,7 +102,15 @@ int main(int argc, const char* argv[]){
 	// That file is a binary of doubles aranged so that the first nXi*sizeof(double) in bytes
 	// is Xi, the second is theta, and the third is thetadot, therefore the total size of the
 	// file in bytes should be 3*nXi*sizeof(double).
-	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, nXi);
+	map<string, double> metadata;
+	metadata.insert(pair<string, double>("n", parsedArgv[0]));
+	metadata.insert(pair<string, double>("num", nXi));
+	metadata.insert(pair<string, double>("m", m));
+	metadata.insert(pair<string, double>("xi0", parsedArgv[2]));
+	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
+	metadata.insert(pair<string, double>("h", parsedArgv[1]));
+
+	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, metadata);
 
 	// Release the memory back to the operating system
 	delete parsedArgv;
