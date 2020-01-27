@@ -17,12 +17,26 @@ Compilation Instructions:
 				- this will use the default values of PSTANOT=0 and DATADIR=data
 
 Run Time Instructions:
-	- To run $ ./integrate [n] [h] [xi0] [xif] [itr]
+	- there are two executable files, integrate-nonDegenerate and integrate-degenerate
+		- running the nonDegenerate file with integrate a polytrope
+		- running the degenerate model will integrate a white dwarf model
+	- To run $ ./integrate-[non][d/D]generate [n] [h] [xi0] [xif] [itr]
   		    n[float]       - polytroic index
   		    h[float]       - integration step size
   	 	    xi0[float]     - initial value of xi to start at
   	  	    xif[float]     - value of xi to integrate too
   		    itr[int]       - number of terms in power serise to use to approximation theta(xi=Xi0)
+
+Data File Format Specs:
+	- After running either executable a file will be saved to whatever data director was spesificed at compile
+	  time, by default this is a directory called "data"
+		- That file will have the input polytropic index in it along with the either being degenerate or non degenerate
+		- The file has a header and a body
+			- The header is an set of ASCII key value pairs
+			- The body is a byte stream of c++ type doubles
+			- The file starts with ">> HEADER"
+			- The header continues until the line ">> BODY"
+				- After this line the next line is the byte stream
 
 Data View Instructions:
 	- To generate graphs of the data:
