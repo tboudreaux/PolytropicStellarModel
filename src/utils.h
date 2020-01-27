@@ -2,6 +2,7 @@
 #define UTILS
 #include<fstream>
 #include<iostream>
+#include<map>
 
 using namespace std;
 /*
@@ -41,5 +42,5 @@ double* arange(float low, float high, float step);
  * Exceptions:
  * 			No Defined Exceptions
  */
-void save(const string& filename, double** state, int size);
+void save(const string& filename, double** state, map<string, double> &metadata);
 #endif

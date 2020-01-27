@@ -4,12 +4,24 @@
 
 #include "model.h"
 
-double vdot(double vN, double *argv, int argc){
+double vdot_nonDegenerate(double vN, double *argv, int argc){
 	// Use complex numbers because base could be negative
 	complex<double> base = argv[1];
 	complex<double> exp = argv[2];
 	complex<double> secondTerm = pow(base, exp);
 	return (-2/argv[0])*vN-secondTerm.real();
+}
+
+double vdot_degenerate(double vN, double *argv, int argc){
+	// Use complex numbers because base could be negative
+	//
+	complex<double> B,C;
+	complex<double> theta = argv[1];
+	double xi = argv[0];
+	B = ((5*pow(theta, -1.0/3.0))/(3))*pow(1+pow(theta, 2.0/3.0), -1.0/2.0) - (pow(theta, 1.0/3.0)/3)*pow(1+pow(theta, 2.0/3.0), -3.0/2.0)
+	C = ((-5*pow(theta, -4.0/3.0))/(9))*pow(1+pow(theta, 2.0/3.0), -1.0/2.0) - (2*pow(theta, -2.0/3.0)/3)*pow(1+pow(theta, 2.0/3.0), -3.0/2.0) + (1.0/3.0)*pow(1+pow(theta, 2.0/3.0), -5.0/2.0)
+
+	return (-2/xi)*vN-(C.real()/B.real())*pow(vN, 2)-(1/B.real())*theta.real()
 }
 
 

@@ -4,7 +4,27 @@
 #include<fstream>
 
 using namespace std;
-/* vdot(double vN, double *argv, int argc)
+/* vdot_nonDegenerate(double vN, double *argv, int argc)
+ *
+ * Desc: mid-way lane-emden equation of form v'=(-2/\xi)v - \theta^{n}
+ * Params:
+ * 		     vn[double]    - current value of v in the function
+ * 		     argv[double*] - array of model arguments
+ * 		     argc[int]     - number of arguments
+ * Returns:
+ * 		     v'[double]    - the derivitive of the function given above
+ * Pre-State:
+ * 			 Stateless
+ * Post-State:
+ * 			 Stateless
+ * Exceptions:
+ * 			 No Defined Exceptions
+ * Notes:
+ * 			 argv takes the form [xi_{i}, theta_{i}, n]
+ */
+double vdot_nonDegenerate(double vN, double *argv, int argc);
+
+/* vdot_degenerate(double vN, double *argv, int argc)
  *
  * Desc: mid-way lane-emden equation of form v'=(-2/\xi)v - \theta^{n}
  * Params:
@@ -20,7 +40,7 @@ using namespace std;
  * Exceptions:
  * 			 No Defined Exceptions
  */
-double vdot(double vN, double *argv, int argc);
+double vdot_degenerate(double vN, double *argv, int argc);
 
 /*
  * a(int k, float n)

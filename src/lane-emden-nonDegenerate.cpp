@@ -3,6 +3,7 @@
 #include<fstream>
 #include<complex>
 #include<string>
+#include<map>
 
 #include "utils.h"
 #include "integration.h"
@@ -83,7 +84,7 @@ int main(int argc, const char* argv[]){
 			modelArgv[1] = state[1][i-1];
 			modelArgv[2] = parsedArgv[0];
 			// Integrate with rk4
-			state[2][i] = rk4(state[2][i-1], parsedArgv[1], (odeModel)vdot, modelArgv, 3);
+			state[2][i] = rk4(state[2][i-1], parsedArgv[1], (odeModel)vdot_nonDegenerate, modelArgv, 3);
 			state[1][i] = state[2][i]*parsedArgv[1] + state[1][i-1];
 		}
 	}
@@ -100,7 +101,15 @@ int main(int argc, const char* argv[]){
 	// That file is a binary of doubles aranged so that the first nXi*sizeof(double) in bytes
 	// is Xi, the second is theta, and the third is thetadot, therefore the total size of the
 	// file in bytes should be 3*nXi*sizeof(double).
-	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, nXi);
+	map<string, double> metadata;
+	metadata.insert(pair<string, double>("n", parsedArgv[0]));
+	metadata.insert(pair<string, double>("num", nXi));
+	metadata.insert(pair<string, double>("m", m));
+	metadata.insert(pair<string, double>("xi0", parsedArgv[2]));
+	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
+	metadata.insert(pair<string, double>("h", parsedArgv[1]));
+	
+	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, metadata);
 
 	// Release the memory back to the operating system
 	delete parsedArgv;
