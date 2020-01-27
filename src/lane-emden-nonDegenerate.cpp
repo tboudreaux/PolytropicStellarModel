@@ -104,12 +104,11 @@ int main(int argc, const char* argv[]){
 	map<string, double> metadata;
 	metadata.insert(pair<string, double>("n", parsedArgv[0]));
 	metadata.insert(pair<string, double>("num", nXi));
-	metadata.insert(pair<string, double>("m", m));
 	metadata.insert(pair<string, double>("xi0", parsedArgv[2]));
 	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
 	metadata.insert(pair<string, double>("h", parsedArgv[1]));
 	
-	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, metadata);
+	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + "-nonDegenerate.dat", state, metadata);
 
 	// Release the memory back to the operating system
 	delete parsedArgv;

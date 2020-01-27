@@ -169,7 +169,7 @@ if __name__ == "__main__":
     n = float(args.path.split('/')[-1].split('_')[1][:-7])
 
     # Load data from the c dump binary
-    state = load_C_output(args.path)
+    state, metadata = load_C_output(args.path)
     xi1, thetaXi1 = find_root(state[0], state[1])
     dthetaXdxi1, _ = find_root(state[2], state[1])
 

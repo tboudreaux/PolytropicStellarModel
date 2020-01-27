@@ -42,7 +42,7 @@ void save(const string& filename, double** state, map<string, double> &metadata)
 		// write each sub array in state one at a time
 		for (int col = 0; col < 3; col++){
 			//dump a binary
-			stateFile.write((char*)state[col], size*sizeof(double));
+			stateFile.write((char*)state[col], ((int)metadata.at("num"))*sizeof(double));
 		}
 	}
 	stateFile.close();

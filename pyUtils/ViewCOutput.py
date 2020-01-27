@@ -52,13 +52,17 @@ def extract_theta_dot_xi(dataFiles):
     Returns -> (N, STATE):
         N -- List of poytroic indicies
         STATE -- List of data from binary file paths (parallel to N)
+        META -- Metadata extracted from header of dump files
     """
     STATE = list()
+    META = list()
     N = list()
     for dataFile in dataFiles:
         N.append(float(dataFile.split("_")[1][:-7]))
-        STATE.append(load_C_output(dataFile))
-    return N, STATE
+        state, metadata = load_C_output(dataFile)
+        META.append(metadata)
+        STATE.append(state)
+    return N, STATE, META
 
 
 if __name__ == '__main__':
@@ -72,8 +76,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Filter Given paths to only select .binary files
-    dataFiles = filter(lambda x: '.binary' in x, args.files)
-    N, states = extract_theta_dot_xi(dataFiles)
+    dataFiles = filter(lambda x: '.dat' in x, args.files)
+    N, states, meta = extract_theta_dot_xi(dataFiles)
 
     # Set the style to include minor ticks, larger labels, and ticks on all sides
     set_style(usetex=args.tex)

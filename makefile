@@ -10,10 +10,11 @@ default: all
 
 all: lane-emden-nonDegenerate.o lane-emden-degenerate.o utils.o model.o integration.o
 	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-nonDegenerate lane-emden.o utils.o model.o integration.o
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-nonDegenerate lane-emden-nonDegenerate.o utils.o model.o integration.o
 	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-degenerate lane-emden-degenerate.o utils.o model.o integration.o
 	@mv *.o $(BINDIR)/
-	@mv integrate $(BINDIR)/
+	@mv integrate-nonDegenerate $(BINDIR)/
+	@mv integrate-degenerate $(BINDIR)/
 	@ln -s $(BINDIR)/integrate-nonDegenerate ./integrate-nonDegenerate
 	@ln -s $(BINDIR)/integrate-degenerate ./integrate-degenerate
 	@mkdir -p $(DATADIR)

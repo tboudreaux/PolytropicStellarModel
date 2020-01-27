@@ -26,7 +26,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Load Data
-    state = load_C_output(args.path)
+    state, metadata = load_C_output(args.path)
     x1approx, thetax1approx = find_root(state[0], state[1])
 
     # Print to standard output

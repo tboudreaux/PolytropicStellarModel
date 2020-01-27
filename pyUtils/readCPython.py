@@ -6,9 +6,19 @@ def load_C_output(filename):
         filename -- path to binary file to read
     Returns -> state:
         state -- 2D Numpy array containing [xi, theta, dtheta/dxi]
+        metadata -- dictionary of metadata extracted from the dump file
 
     """
     with open(filename, 'rb') as f:
+        body = False
+        metadata = dict()
+        while not body:
+            line = f.read()
+            if 'BODY' in line:
+                body = True
+            else:
+                data = line[:2].split(':')
+                metadata[data[0]] =float(data[1])
         contents = f.read()
     # Read the bytes as a c type double
     state = np.frombuffer(contents, dtype=np.float64)
@@ -17,4 +27,4 @@ def load_C_output(filename):
     # Using totalsize = 3*n, we know total size so we can
     # find n
     state = state.reshape(3, int(state.shape[0]/3))
-    return state
+    return state, metadata

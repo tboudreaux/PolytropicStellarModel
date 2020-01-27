@@ -86,7 +86,7 @@ int main(int argc, const char* argv[]){
 			state[2][i] = rk4(state[2][i-1], parsedArgv[1], (odeModel)vdot_degenerate, modelArgv, 2);
 			state[1][i] = state[2][i]*parsedArgv[1] + state[1][i-1];
 		}
-		m += pow(state[0][i], 2)*state[1][i]*parsedArgv[1]
+		m += pow(state[0][i], 2)*state[1][i]*parsedArgv[1];
 	}
 
 	// print to stdout for use with ioredirection if one wants to work with a text file
@@ -110,7 +110,7 @@ int main(int argc, const char* argv[]){
 	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
 	metadata.insert(pair<string, double>("h", parsedArgv[1]));
 
-	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + ".binary", state, metadata);
+	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + "-degenerate.dat", state, metadata);
 
 	// Release the memory back to the operating system
 	delete parsedArgv;
