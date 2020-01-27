@@ -78,7 +78,7 @@ int main(int argc, const char* argv[]){
 	for(int i=0; i<nXi; i++){
 		if (i==0){
 			// Set the initial theta(xi) value based on the power serise expansion
-			state[1][i] = parsedArgv[5];
+			state[1][i] = parsedArgv[0];
 		}	
 		else{
 			modelArgv[0] = state[0][i];
@@ -108,13 +108,12 @@ int main(int argc, const char* argv[]){
 	// is Xi, the second is theta, and the third is thetadot, therefore the total size of the
 	// file in bytes should be 3*nXi*sizeof(double).
 	map<string, double> metadata;
-	metadata.insert(pair<string, double>("n", parsedArgv[0]));
+	metadata.insert(pair<string, double>("theta_c", parsedArgv[0]));
 	metadata.insert(pair<string, double>("num", nXi));
 	metadata.insert(pair<string, double>("m", m));
 	metadata.insert(pair<string, double>("xi0", parsedArgv[2]));
 	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
 	metadata.insert(pair<string, double>("h", parsedArgv[1]));
-	metadata.insert(pair<string, double>("theta_c", parsedArgv[5]));
 
 
 	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + "-degenerate.dat", state, metadata);

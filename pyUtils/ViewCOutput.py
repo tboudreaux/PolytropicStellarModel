@@ -1,12 +1,15 @@
+import matplotlib as mpl
+mpl.use('agg')
+
 from readCPython import load_C_output
 from getXi1 import find_root
+
 
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import argparse
 
-import matplotlib as mpl
 
 
 def set_style(usetex=False):
@@ -56,13 +59,11 @@ def extract_theta_dot_xi(dataFiles):
     """
     STATE = list()
     META = list()
-    N = list()
     for dataFile in dataFiles:
-        N.append(float(dataFile.split("_")[1][:-7]))
         state, metadata = load_C_output(dataFile)
         META.append(metadata)
         STATE.append(state)
-    return N, STATE, META
+    return STATE, META
 
 
 if __name__ == '__main__':
@@ -77,7 +78,7 @@ if __name__ == '__main__':
 
     # Filter Given paths to only select .binary files
     dataFiles = filter(lambda x: '.dat' in x, args.files)
-    N, states, meta = extract_theta_dot_xi(dataFiles)
+    states, metas = extract_theta_dot_xi(dataFiles)
 
     # Set the style to include minor ticks, larger labels, and ticks on all sides
     set_style(usetex=args.tex)
@@ -85,9 +86,13 @@ if __name__ == '__main__':
 
     # Plot all Given Solutions
     fig, ax = plt.subplots(1, 1, figsize=(10, 7))
-    for n, state in zip(N, states):
-        ax.plot(state[0], state[1], label=r"$\theta_{{n={}}}$".format(n))
-        ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{n={}}}$".format(n))
+    for meta, state in zip(metas, states):
+        if 'n' in meta:
+            identifier = meta['n']
+        else:
+            identifier = meta['theta_c']
+        ax.plot(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier))
+        ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier))
         # If requested show where each solution has its root
         if args.root:
             xi1Approx, theta1Approx = find_root(state[0], state[1])

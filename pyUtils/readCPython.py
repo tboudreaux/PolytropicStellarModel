@@ -13,12 +13,15 @@ def load_C_output(filename):
         body = False
         metadata = dict()
         while not body:
-            line = f.read()
+            line = f.readline()
+            line = line.decode("utf-8").rstrip().lstrip()
+            print(line)
             if 'BODY' in line:
                 body = True
             else:
-                data = line[:2].split(':')
-                metadata[data[0]] =float(data[1])
+                if line.startswith("#"):
+                    data = line[2:].split(':')
+                    metadata[data[0]] =float(data[1])
         contents = f.read()
     # Read the bytes as a c type double
     state = np.frombuffer(contents, dtype=np.float64)
