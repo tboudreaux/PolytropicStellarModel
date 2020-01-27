@@ -10,6 +10,7 @@ default: all
 
 all: lane-emden-nonDegenerate.o lane-emden-degenerate.o utils.o model.o integration.o
 	@mkdir -p $(BINDIR)
+	@mkdir -p $(DATADIR)
 	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-nonDegenerate lane-emden-nonDegenerate.o utils.o model.o integration.o
 	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-degenerate lane-emden-degenerate.o utils.o model.o integration.o
 	@mv *.o $(BINDIR)/
@@ -17,7 +18,6 @@ all: lane-emden-nonDegenerate.o lane-emden-degenerate.o utils.o model.o integrat
 	@mv integrate-degenerate $(BINDIR)/
 	@ln -s $(BINDIR)/integrate-nonDegenerate ./integrate-nonDegenerate
 	@ln -s $(BINDIR)/integrate-degenerate ./integrate-degenerate
-	@mkdir -p $(DATADIR)
 	@ln -s ../$(DATADIR) pyUtils/$(DATADIR)
 	
 lane-emden-nonDegenerate.o: $(HEADERDIRS)/lane-emden-nonDegenerate.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h

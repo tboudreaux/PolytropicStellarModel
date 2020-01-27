@@ -23,6 +23,7 @@ typedef double (* odeModel)(double vN, double *argv, int argc);
  * 	 	    Xi0[float]     - initial value of xi to start at
  * 	  	    Xif[float]     - value of xi to integrate too
  * 		    itr[int]       - number of terms in power serise to use to approximation theta(xi=Xi0)
+ * 		    theta_c[float] - central density in units of rho_0
  * Returns:
  * 		    Exit Code[int] - 0
  * Pre-State:
@@ -77,7 +78,7 @@ int main(int argc, const char* argv[]){
 	for(int i=0; i<nXi; i++){
 		if (i==0){
 			// Set the initial theta(xi) value based on the power serise expansion
-			state[1][i] = theta_approx(state[0][i], parsedArgv[0], parsedArgv[4]);
+			state[1][i] = parsedArgv[5];
 		}	
 		else{
 			modelArgv[0] = state[0][i];
@@ -86,7 +87,11 @@ int main(int argc, const char* argv[]){
 			state[2][i] = rk4(state[2][i-1], parsedArgv[1], (odeModel)vdot_degenerate, modelArgv, 2);
 			state[1][i] = state[2][i]*parsedArgv[1] + state[1][i-1];
 		}
-		m += pow(state[0][i], 2)*state[1][i]*parsedArgv[1];
+		// Only keep track of the mass where the equation is defined
+		if (state[1][i] >= 0){
+			// Left endpoint reiemann-sum
+			m += pow(state[0][i], 2)*state[1][i]*parsedArgv[1];
+		}
 	}
 
 	// print to stdout for use with ioredirection if one wants to work with a text file
@@ -109,6 +114,8 @@ int main(int argc, const char* argv[]){
 	metadata.insert(pair<string, double>("xi0", parsedArgv[2]));
 	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
 	metadata.insert(pair<string, double>("h", parsedArgv[1]));
+	metadata.insert(pair<string, double>("theta_c", parsedArgv[5]));
+
 
 	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + "-degenerate.dat", state, metadata);
 
