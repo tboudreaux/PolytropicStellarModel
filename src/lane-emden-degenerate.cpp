@@ -84,11 +84,17 @@ int main(int argc, const char* argv[]){
 			modelArgv[0] = state[0][i];
 			modelArgv[1] = state[1][i-1];
 			// Integrate with rk4
-			state[2][i] = rk4(state[2][i-1], parsedArgv[1], (odeModel)vdot_degenerate, modelArgv, 2);
-			state[1][i] = state[2][i]*parsedArgv[1] + state[1][i-1];
+			if (state[1][i-1] > 0){
+				state[2][i] = rk4(state[2][i-1], parsedArgv[1], (odeModel)vdot_degenerate, modelArgv, 2);
+				state[1][i] = state[2][i]*parsedArgv[1] + state[1][i-1];
+			}
+			else{
+				state[2][i] = 0;
+				state[1][i] = 0;
+			}
 		}
 		// Only keep track of the mass where the equation is defined
-		if (state[1][i] >= 0){
+		if (state[1][i] > 0){
 			// Left endpoint reiemann-sum
 			m += pow(state[0][i], 2)*state[1][i]*parsedArgv[1];
 		}
@@ -100,7 +106,8 @@ int main(int argc, const char* argv[]){
 		for(int i = 0; i < nXi; i++){
 			cout << state[0][i] << "," << state[1][i] << "," << state[2][i] << endl;
 		}
-		cout << m << endl;
+		cout << "Mass: " << m << endl;
+		cout << "Num: " << nXi << endl;
 	}
 
 	// Dump the array state to a file

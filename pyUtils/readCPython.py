@@ -15,7 +15,6 @@ def load_C_output(filename):
         while not body:
             line = f.readline()
             line = line.decode("utf-8").rstrip().lstrip()
-            print(line)
             if 'BODY' in line:
                 body = True
             else:

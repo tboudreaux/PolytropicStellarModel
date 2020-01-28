@@ -53,7 +53,6 @@ def extract_theta_dot_xi(dataFiles):
         dataFiles -- iterator of path to binary data files produced from c executable itegrate
 
     Returns -> (N, STATE):
-        N -- List of poytroic indicies
         STATE -- List of data from binary file paths (parallel to N)
         META -- Metadata extracted from header of dump files
     """
@@ -73,12 +72,14 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', type=str, default="Figures/ThetaXi.pdf", metavar='<path/to/output/file>', help='output location')
     parser.add_argument('-r', '--root',  action='store_true', help='Also plot the crosshairs showing xi1')
     parser.add_argument('-t', '--tex', action='store_true', help='Use the tex rendering engine when plotting')
+    parser.add_argument('-d', '--derivitive', action='store_true', help='Plot dtheta/dxi along with theta')
+    parser.add_argument('-k', '--key', action='store_true', help='Include a key/legend in the output graph')
+    parser.add_argument('-l', '--log', action='store_true', help='plot on a semilogy scale')
 
     args = parser.parse_args()
 
     # Filter Given paths to only select .binary files
     dataFiles = filter(lambda x: '.dat' in x, args.files)
-    states, metas = extract_theta_dot_xi(dataFiles)
 
     # Set the style to include minor ticks, larger labels, and ticks on all sides
     set_style(usetex=args.tex)
@@ -86,21 +87,32 @@ if __name__ == '__main__':
 
     # Plot all Given Solutions
     fig, ax = plt.subplots(1, 1, figsize=(10, 7))
-    for meta, state in zip(metas, states):
+    for file in dataFiles:
+        state, meta = load_C_output(file)
         if 'n' in meta:
             identifier = meta['n']
         else:
             identifier = meta['theta_c']
-        ax.plot(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier))
-        ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier))
+        if args.log:
+            ax.semilogy(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier))
+        else:
+            ax.plot(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier))
+        if args.derivitive:
+            if args.log:
+                ax.semilogy(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier))
+            else:
+                ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier))
         # If requested show where each solution has its root
         if args.root:
             xi1Approx, theta1Approx = find_root(state[0], state[1])
             ax.axvline(x=xi1Approx, linestyle=':', color='black', alpha=0.5)
             ax.axhline(y=0, linestyle=':', color='black', alpha=0.5)
+        del state
+        del meta
     ax.set_xlabel(r'$\xi$', fontsize=17)
     ax.set_ylabel(r'$\theta$, $\frac{d\theta}{d\xi}$', fontsize=17)
-    plt.legend()
+    if args.key:
+        plt.legend()
 
     # Save File to requested Location
     plt.savefig(args.output, bbox_inches='tight')
