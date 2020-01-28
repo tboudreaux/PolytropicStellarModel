@@ -41,7 +41,7 @@ int main(int argc, const char* argv[]){
 	double* parsedArgv = NULL;
 	double modelArgv[3];
 	long int nXi;
-	double m;
+	double m = 0;
 	parsedArgv = new double[argc-1];
 
 
@@ -63,7 +63,7 @@ int main(int argc, const char* argv[]){
 
 	// Total number of array elements in integration
 	// (hi-low)/step
-	nXi = (parsedArgv[3]-parsedArgv[2])/parsedArgv[1];
+	nXi = ((parsedArgv[3]-parsedArgv[2])/parsedArgv[1])+1;
 
 	// initialize the 2D array
 	state = new double*[3];

@@ -11,7 +11,7 @@ typedef double (* odeModel)(double vN, double *argv, int argc);
 double* arange(float low, float high, float step){
 	double* ts = NULL;
 	long int size;
-	size = (high-low)/step;
+	size = ((high-low)/step)+1;
 	// Check for request for too much memory
 	if (size*8 > 1000000000){
 		cerr << "Error! You are trying to run a simulation which will take over a GB of memory to store.";

@@ -63,3 +63,12 @@ Physical Scaling quantities:
 	- To plot the physical quantities use the python script <pyUtils/plotPhysical.py>
 		- $ python pyUtils/plotPhysical.py <path/to/physically/scaled/data/file> --output <path/to/save/figure>
 			- use --help to see command line options
+
+Tests:
+	- To test the code use the script <tests/testLaneEmden.sh>
+		- To do this you have to have compiled the integrator and had DATADIR=data (or change the path in the python file in tests)
+		- This script will integrate a polytrope of n=1 from 0.001 to 4 xi with a step size of 0.001 
+		- It will then use an the resultant xi array from that integration to compute the exact solution in the n=1 case
+			- sin(xi)/xi
+		- Finally it will take the arithmatic mean of the differences
+			- Smaller values of the this imply that the integrator is returning a solution close to the exact solution.
