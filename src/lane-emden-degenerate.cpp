@@ -100,20 +100,8 @@ int main(int argc, const char* argv[]){
 		}
 	}
 
-	// print to stdout for use with ioredirection if one wants to work with a text file
-	//  as opposed to a binary file
-	if (pstanot == 1){
-		for(int i = 0; i < nXi; i++){
-			cout << state[0][i] << "," << state[1][i] << "," << state[2][i] << endl;
-		}
-		cout << "Mass: " << m << endl;
-		cout << "Num: " << nXi << endl;
-	}
-
-	// Dump the array state to a file
-	// That file is a binary of doubles aranged so that the first nXi*sizeof(double) in bytes
-	// is Xi, the second is theta, and the third is thetadot, therefore the total size of the
-	// file in bytes should be 3*nXi*sizeof(double).
+	// Generate the metadata hash table for use as the header of the 
+	// save file
 	map<string, double> metadata;
 	metadata.insert(pair<string, double>("theta_c", parsedArgv[0]));
 	metadata.insert(pair<string, double>("num", nXi));
@@ -122,7 +110,21 @@ int main(int argc, const char* argv[]){
 	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
 	metadata.insert(pair<string, double>("h", parsedArgv[1]));
 
+	// print to stdout for use with ioredirection if one wants to work with a text file
+	//  as opposed to a binary file
+	if (pstanot == 1){
+		cout << ">> HEADER" << endl;
+		streamHeader(metadata, cout);
+		cout << ">> BODY" << endl;
+		for(int i = 0; i < nXi; i++){
+			cout << state[0][i] << "," << state[1][i] << "," << state[2][i] << endl;
+		}
+	}
 
+	// Dump the array state to a file
+	// That file is a binary of doubles aranged so that the first nXi*sizeof(double) in bytes
+	// is Xi, the second is theta, and the third is thetadot, therefore the total size of the
+	// file in bytes should be 3*nXi*sizeof(double).
 	save(datadir + "laneEmdenDataFile_" + to_string((float)parsedArgv[0])  + "-degenerate.dat", state, metadata);
 
 	// Release the memory back to the operating system

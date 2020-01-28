@@ -28,16 +28,13 @@ double* arange(float low, float high, float step){
 }
 
 void save(const string& filename, double** state, map<string, double> &metadata){
-	map<string, double>::iterator it;
 	ofstream stateFile;
 
 	// cast c++ type string to c type string
 	stateFile.open(filename.c_str());
 	if (stateFile.is_open()){
 		stateFile << ">> HEADER" << endl;
-		for (it = metadata.begin(); it != metadata.end(); it++){
-			stateFile << "# " << it->first << ":" << it->second << endl;
-		}
+		streamHeader(metadata, stateFile);
 		stateFile << ">> BODY" << endl;
 		// write each sub array in state one at a time
 		for (int col = 0; col < 3; col++){
@@ -46,4 +43,11 @@ void save(const string& filename, double** state, map<string, double> &metadata)
 		}
 	}
 	stateFile.close();
+}
+
+void streamHeader(map<string, double> &metadata, ostream &stream){
+	map<string, double>::iterator it;
+	for (it = metadata.begin(); it != metadata.end(); it++){
+		stream << "# " << it->first << ":" << it->second << endl;
+	}
 }

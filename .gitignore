@@ -151,3 +151,6 @@ physicalData/
 
 data
 *.dat
+
+integrate-degenerate
+integrate-nonDegenerate

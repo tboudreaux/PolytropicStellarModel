@@ -43,4 +43,22 @@ double* arange(float low, float high, float step);
  * 			No Defined Exceptions
  */
 void save(const string& filename, double** state, map<string, double> &metadata);
+
+/*
+ * streamHeader(map<sting, double>, ostream)
+ *
+ * Desc: write the header to a general stream
+ * Params:
+ * 		  metadata[map<string, double>] - hash table of header
+ * 		  stream[ostream]               - output stream to write to
+ * Returns
+ * 		  void
+ * Pre-State:
+ * 		  Stateless
+ * Post-State:
+ * 		 Header is written to stream as "# key:value"
+ * Exceptions:
+ * 		 No Defined Exceptions
+ */
+void streamHeader(map<string, double> &metadata, ostream &stream);
 #endif
