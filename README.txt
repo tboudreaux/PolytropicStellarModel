@@ -7,7 +7,7 @@ Compilation Instructions:
 	- There are two compile time arguemnts which may be set
 		- DATADIR will set where that data files are written to (will make the folder to)
 		- PSTANOT will determine if the output is also written to standard output
-			- This is in addition to dumping to a binary file which will always happen
+			- This is in addition to dumping to a dat file which will always happen
 			- 0 to supress standard output
 			- 1 to print to standard output
 		- Examples of use
@@ -54,11 +54,11 @@ Data View Instructions:
 			- $ python getXi1.py --help
 
 	- If you want to generate the figures of all the dataruns on seperate plots use something like from the pyUtils directory
-		- $ ls data/*.binary | awk '{split($0,a,"/"); print a[2]}' | xargs -I{} ./ViewCOutput.py data/{} -o Figures/Multi_{}.pdf
+		- $ ls data/*.dat | awk '{split($0,a,"/"); print a[2]}' | xargs -I{} ./ViewCOutput.py data/{} -o Figures/Multi_{}.pdf
 
 Physical Scaling quantities:
 	- To generate the physical scalings from xi, theta, and dtheta use the python script <pyUtils/convertToPhysical.py>
-		- $ python pyUtils/convertToPhysical.py <path/to/binary/file>
+		- $ python pyUtils/convertToPhysical.py <path/to/dat/file>
 			- use --help to see command line options
 	- To plot the physical quantities use the python script <pyUtils/plotPhysical.py>
 		- $ python pyUtils/plotPhysical.py <path/to/physically/scaled/data/file> --output <path/to/save/figure>
