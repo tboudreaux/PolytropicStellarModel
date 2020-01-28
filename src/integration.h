@@ -1,8 +1,6 @@
 #ifndef INT
 #define INT
 
-using namespace std;
-
 typedef double (* odeModel)(double vN, double *argv, int argc);
 
 /* rk4(double yN, float h, unsigned long *model, double *argv, int argc)

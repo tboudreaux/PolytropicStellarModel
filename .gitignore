@@ -149,7 +149,6 @@ physicalData/
 ._.DS_Store
 ._README.txt
 
-data
 *.dat
 
 integrate-degenerate
