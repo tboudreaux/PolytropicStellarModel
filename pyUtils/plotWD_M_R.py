@@ -1,4 +1,5 @@
 import matplotlib as mpl
+# Allow matplotlib plots to be rendered without active window manager
 mpl.use('agg')
 
 from scipy.optimize import curve_fit
@@ -61,6 +62,8 @@ if __name__ == "__main__":
         state, meta = load_C_output(file)
 
         xi1, theta_xi1 = find_root(state[0], state[1])
+
+        # convert values to physical units from the dimensionless units
         R.append(alpha*xi1*100)
         m.append(0.09*meta['m'])
 

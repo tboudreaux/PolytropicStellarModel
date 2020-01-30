@@ -1,4 +1,5 @@
 import matplotlib as mpl
+# Allow matplotlib plots to be rendered without active window manager
 mpl.use('agg')
 
 from scipy.optimize import curve_fit
@@ -56,14 +57,17 @@ if __name__ == "__main__":
     rho_c = list()
     m = list()
     for file in args.files:
-        state, meta = load_C_output(file)
+        state, meta = load_C_output(file, oh=True)
 
+        # convert value to physical units from the dimensionless values
         rho_c.append(3.789e6*meta['theta_c'])
         m.append(0.09*meta['m'])
 
     set_style(usetex=args.tex)
     fig, ax = plt.subplots(1, 1, figsize=(10, 7))
     ax.semilogx(rho_c, m, 'kx')
+
+    # fit a logistic function to extract verticle asymptote
     if args.fit:
         fit, covar = curve_fit(logistic, np.log10(rho_c), m)
         err = np.sqrt(np.diag(covar))

@@ -1,4 +1,5 @@
 import matplotlib as mpl
+# Allow matplotlib plots to be rendered without active window manager
 mpl.use('Agg')
 
 import numpy as np
@@ -94,6 +95,7 @@ if __name__ == "__main__":
     pr = P_R(rho)
     p = P(rho)
 
+    # Write to standard output if figure output is not provided
     if args.output == 'NULL':
         print('rho,PN,PR,P')
         for r, p_n, p_r, p_p in zip(rho, pn, pr, p):

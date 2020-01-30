@@ -1,4 +1,5 @@
 import matplotlib as mpl
+# Allow matplotlib plots to be rendered without active window manager
 mpl.use('Agg')
 
 import numpy as np

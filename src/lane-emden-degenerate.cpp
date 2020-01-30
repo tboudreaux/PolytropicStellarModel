@@ -9,11 +9,16 @@
 #include "integration.h"
 #include "model.h"
 
+// Macros to convert definitions into C type strings
 #define STRINGIFY2(X) #X
 #define STRINGIFY(X) STRINGIFY2(X)
 
 using namespace std;
+
+// function to pass as pointer definition
 typedef double (* odeModel)(double vN, double *argv, int argc);
+
+
 /*
  * main(int argc, const char* argv[])
  *
@@ -87,11 +92,14 @@ int main(int argc, const char* argv[]){
 		else{
 			modelArgv[0] = state[0][i];
 			modelArgv[1] = state[1][i-1];
-			// Integrate with rk4
+			// Set up a window which is equivilent to zero to prevent the integrator
+			// from jumping over zero
 			if (state[1][i-1] > 1.0e-5){
+				// Integrate with rk4
 				state[2][i] = rk4(state[2][i-1], h, (odeModel)vdot_degenerate, modelArgv, 2);
 				state[1][i] = state[2][i]*h + state[1][i-1];
 			}
+			// When the dimensionless density goes negative constrain it to zero
 			else{
 				state[1][i] = 0;
 				state[2][i] = 0;

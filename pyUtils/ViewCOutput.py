@@ -1,4 +1,5 @@
 import matplotlib as mpl
+# Allow matplotlib plots to be rendered without active window manager
 mpl.use('agg')
 
 from readCPython import load_C_output
@@ -89,10 +90,12 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(1, 1, figsize=(10, 7))
     for file in dataFiles:
         state, meta = load_C_output(file)
+        # deal with either degenerate or non degenerate identifier
         if 'n' in meta:
             identifier = meta['n']
         else:
             identifier = meta['theta_c']
+        # deal with either log or non log plotting
         if args.log:
             ax.semilogy(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier))
         else:
@@ -107,6 +110,8 @@ if __name__ == '__main__':
             xi1Approx, theta1Approx = find_root(state[0], state[1])
             ax.axvline(x=xi1Approx, linestyle=':', color='black', alpha=0.5)
             ax.axhline(y=0, linestyle=':', color='black', alpha=0.5)
+        # explicitly clear data when plotting multiple solutions in an attempt to keep the memory manager happy
+        # does not help in most cases because the python GC is pretty okay but no harm in being explicit here
         del state
         del meta
     ax.set_xlabel(r'$\xi$', fontsize=17)

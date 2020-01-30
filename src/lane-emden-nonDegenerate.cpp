@@ -13,7 +13,11 @@
 #define STRINGIFY(X) STRINGIFY2(X)
 
 using namespace std;
+
+// function to pass as pointer definition
 typedef double (* odeModel)(double vN, double *argv, int argc);
+
+
 /*
  * main(int argc, const char* argv[])
  *
