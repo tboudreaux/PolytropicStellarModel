@@ -3,6 +3,7 @@
 #include<fstream>
 #include<complex>
 #include<string>
+#include<vector>
 
 #include "utils.h"
 #include "integration.h"
@@ -42,6 +43,8 @@ int main(int argc, const char* argv[]){
 	double modelArgv[3];
 	long int nXi;
 	double m = 0;
+	double dm = 0;
+	double h;
 	parsedArgv = new double[argc-1];
 
 
@@ -60,14 +63,15 @@ int main(int argc, const char* argv[]){
 	for (int arg=0; arg<argc-1; arg++){
 		parsedArgv[arg] = stod(argv[arg+1]);
 	}
+	h = parsedArgv[1];
 
 	// Total number of array elements in integration
 	// (hi-low)/step
-	nXi = ((parsedArgv[3]-parsedArgv[2])/parsedArgv[1])+1;
+	nXi = ((parsedArgv[3]-parsedArgv[2])/h)+1;
 
 	// initialize the 2D array
 	state = new double*[3];
-	state[0] = arange(parsedArgv[2], parsedArgv[3], parsedArgv[1]);
+	state[0] = arange(parsedArgv[2], parsedArgv[3], h);
 	for (int i = 1; i < 3; i++){
 		state[i] = new double[nXi];
 	}
@@ -84,19 +88,20 @@ int main(int argc, const char* argv[]){
 			modelArgv[0] = state[0][i];
 			modelArgv[1] = state[1][i-1];
 			// Integrate with rk4
-			if (state[1][i-1] > 0){
-				state[2][i] = rk4(state[2][i-1], parsedArgv[1], (odeModel)vdot_degenerate, modelArgv, 2);
-				state[1][i] = state[2][i]*parsedArgv[1] + state[1][i-1];
+			if (state[1][i-1] > 1.0e-5){
+				state[2][i] = rk4(state[2][i-1], h, (odeModel)vdot_degenerate, modelArgv, 2);
+				state[1][i] = state[2][i]*h + state[1][i-1];
 			}
 			else{
-				state[2][i] = 0;
 				state[1][i] = 0;
+				state[2][i] = 0;
 			}
 		}
 		// Only keep track of the mass where the equation is defined
 		if (state[1][i] > 0){
 			// Left endpoint reiemann-sum
-			m += pow(state[0][i], 2)*state[1][i]*parsedArgv[1];
+			dm = pow(state[0][i], 2)*state[1][i]*h;
+			m += dm;
 		}
 	}
 
@@ -108,7 +113,7 @@ int main(int argc, const char* argv[]){
 	metadata.insert(pair<string, double>("m", m));
 	metadata.insert(pair<string, double>("xi0", parsedArgv[2]));
 	metadata.insert(pair<string, double>("xif", parsedArgv[3]));
-	metadata.insert(pair<string, double>("h", parsedArgv[1]));
+	metadata.insert(pair<string, double>("h", h));
 
 	// print to stdout for use with ioredirection if one wants to work with a text file
 	//  as opposed to a binary file

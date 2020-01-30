@@ -61,4 +61,5 @@ void save(const string& filename, double** state, map<string, double> &metadata)
  * 		 No Defined Exceptions
  */
 void streamHeader(map<string, double> &metadata, ostream &stream);
+
 #endif

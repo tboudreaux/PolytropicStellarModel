@@ -15,13 +15,13 @@ double vdot_nonDegenerate(double vN, double *argv, int argc){
 double vdot_degenerate(double vN, double *argv, int argc){
 	// Use complex numbers because base could be negative
 	//
-	complex<double> B,C;
-	complex<double> theta = argv[1];
-	complex<double> xi = argv[0];
+	double B,C;
+	double theta = argv[1];
+	double xi = argv[0];
 
 	B = ((5.0*pow(theta, -1.0/3.0))/(3.0))*pow(1.0+pow(theta, 2.0/3.0), -1.0/2.0) - (pow(theta, 1.0/3.0)/3.0)*pow(1.0+pow(theta, 2.0/3.0), -3.0/2.0);
 	C = ((-5.0*pow(theta, -4.0/3.0))/(9.0))*pow(1.0+pow(theta, 2.0/3.0), -1.0/2.0) - (2.0*pow(theta, -2.0/3.0)/3.0)*pow(1.0+pow(theta, 2.0/3.0), -3.0/2.0) + (1.0/3.0)*pow(1.0+pow(theta, 2.0/3.0), -5.0/2.0);
-	return (-2.0/xi.real())*vN-(C.real()/B.real())*pow(vN, 2.0)-(1.0/B.real())*theta.real();
+	return (-2.0/xi)*vN-(C/B)*pow(vN, 2.0)-(1.0/B)*theta;
 }
 
 
