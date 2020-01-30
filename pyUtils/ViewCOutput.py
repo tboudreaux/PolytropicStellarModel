@@ -97,14 +97,14 @@ if __name__ == '__main__':
             identifier = meta['theta_c']
         # deal with either log or non log plotting
         if args.log:
-            ax.semilogy(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier))
+            ax.semilogy(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier), color='black')
         else:
-            ax.plot(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier))
+            ax.plot(state[0], state[1], label=r"$\theta_{{{}}}$".format(identifier), color='black')
         if args.derivitive:
             if args.log:
-                ax.semilogy(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier))
+                ax.semilogy(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier), color='black')
             else:
-                ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier))
+                ax.plot(state[0], state[2], linestyle='--', label=r"$\left(\frac{{d\theta}}{{d\xi}}\right)_{{{}}}$".format(identifier), color='black')
         # If requested show where each solution has its root
         if args.root:
             xi1Approx, theta1Approx = find_root(state[0], state[1])
