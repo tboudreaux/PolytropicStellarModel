@@ -143,7 +143,6 @@ physicalData/
 
 *.npy
 *.binary
-*.pdf
 
 .DS_Store
 ._.DS_Store
