@@ -20,12 +20,12 @@ Run Time Instructions:
 	- there are two executable files, integrate-nonDegenerate and integrate-degenerate
 		- running the nonDegenerate file with integrate a polytrope
 		- running the degenerate model will integrate a white dwarf model
-	- To run $ ./integrate-[non][d/D]generate [n] [h] [xi0] [xif] [itr]
-  		    n[float]       - polytroic index
+	- To run $ ./integrate-[non][d/D]generate [n/theta_c] [h] [xi0] [xif] [itr]
+  		    n/theta_c[float]       - polytroic index(non degenerate case)/central density (degenerate case)
   		    h[float]       - integration step size
   	 	    xi0[float]     - initial value of xi to start at
   	  	    xif[float]     - value of xi to integrate too
-  		    itr[int]       - number of terms in power serise to use to approximation theta(xi=Xi0)
+  		    [itr[int]]       - number of terms in power serise to use to approximation theta(xi=Xi0) only used in non degenerate case
 
 Data File Format Specs:
 	- After running either executable a file will be saved to whatever data director was spesificed at compile

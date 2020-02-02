@@ -24,12 +24,11 @@ typedef double (* odeModel)(double vN, double *argv, int argc);
  *
  * Desc: Numerically integrate theta over some range of xi
  * Params:
- * 		    n[float]       - polytroic index
+ * 		    theta_c[float] - central density in units of rho_0
  * 		    h[float]       - integration step size
  * 	 	    Xi0[float]     - initial value of xi to start at
  * 	  	    Xif[float]     - value of xi to integrate too
  * 		    itr[int]       - number of terms in power serise to use to approximation theta(xi=Xi0)
- * 		    theta_c[float] - central density in units of rho_0
  * Returns:
  * 		    Exit Code[int] - 0
  * Pre-State:
