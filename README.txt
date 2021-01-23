@@ -16,16 +16,21 @@ Compilation Instructions:
 			- $ make
 				- this will use the default values of PSTANOT=0 and DATADIR=data
 
+This is an experimental CUDA version, written as a proof of concept that this method of parallelization is viable. Namely running a full instance of a piece of code in a single thread. Its a silly way of doing things but it has prooven very difficult to parallelize stellar evolution code any other way thusfar. 
+
+To Run this you will need an Nvidia GPU and cuda installed. nvcc is the compiler used in the makefile. When it runs you define the number of models, and that informs the grid size. Each model has a different polytropic index. 
+
+This is proof of concept and should not be taken as meaning that this is the best way to run polytropic solutions. Rather, it was convient code to test on.
+
 Run Time Instructions:
-	- there are two executable files, integrate-nonDegenerate and integrate-degenerate
+	- there is one executable files, integrate-nonDegenerate
 		- running the nonDegenerate file with integrate a polytrope
-		- running the degenerate model will integrate a white dwarf model
-	- To run $ ./integrate-[non][d/D]generate [n/theta_c] [h] [xi0] [xif] [itr]
-  		    n/theta_c[float]       - polytroic index(non degenerate case)/central density (degenerate case)
+	- To run $ ./integrate-nonDgenerate [n] [h] [xi0] [xif] [itr]
+  		    n[float]       - maximum polytroic index
   		    h[float]       - integration step size
   	 	    xi0[float]     - initial value of xi to start at
   	  	    xif[float]     - value of xi to integrate too
-  		    [itr[int]]       - number of terms in power serise to use to approximation theta(xi=Xi0) only used in non degenerate case
+			models[int]    - The total number of models to run
 
 Data File Format Specs:
 	- After running either executable a file will be saved to whatever data director was spesificed at compile
