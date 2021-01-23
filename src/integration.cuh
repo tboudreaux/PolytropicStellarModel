@@ -21,5 +21,5 @@ typedef double (* odeModel)(double vN, double *argv, int argc);
  * Exceptions:
  * 		    No Defined Exceptions
  */
-double rk4(double yN, float h, odeModel model, double *argv, int argc);
+__device__ double rk4(double yN, float h, odeModel model, double *argv, int argc);
 #endif

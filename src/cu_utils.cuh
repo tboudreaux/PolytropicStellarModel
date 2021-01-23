@@ -1,9 +1,8 @@
-#ifndef MODEL
-#define MODEL
+#ifndef CU_UTILS
+#define CU_UTILS
 
-#include<fstream>
+typedef double (* odeModel)(double vN, double *argv, int argc);
 
-using namespace std;
 /* vdot_nonDegenerate(double vN, double *argv, int argc)
  *
  * Desc: mid-way lane-emden equation of form v'=(-2/\xi)v - \theta^{n}
@@ -22,25 +21,7 @@ using namespace std;
  * Notes:
  * 			 argv takes the form [xi_{i}, theta_{i}, n]
  */
-double vdot_nonDegenerate(double vN, double *argv, int argc);
-
-/* vdot_degenerate(double vN, double *argv, int argc)
- *
- * Desc: mid-way lane-emden equation of form v'=(-2/\xi)v - \theta^{n}
- * Params:
- * 		     vn[double]    - current value of v in the function
- * 		     argv[double*] - array of model arguments
- * 		     argc[int]     - number of arguments
- * Returns:
- * 		     v'[double]    - the derivitive of the function given above
- * Pre-State:
- * 			 Stateless
- * Post-State:
- * 			 Stateless
- * Exceptions:
- * 			 No Defined Exceptions
- */
-double vdot_degenerate(double vN, double *argv, int argc);
+__device__ double vdot_nonDegenerate(double vN, double *argv, int argc);
 
 /*
  * a(int k, float n)
@@ -61,7 +42,7 @@ double vdot_degenerate(double vN, double *argv, int argc);
  * 			Using large values for k (above ~15) will lead to stack overflows as the 
  * 			implicit tail recursion depth (1MB stack size) is exceeded
  */
-double a(int k, float n);
+__device__ double a(int k, float n);
 
 /*
  * c(int m, float n)
@@ -79,7 +60,7 @@ double a(int k, float n);
  * Exceptions:
  *          No Defined Exceptions
  */
-double c(int m, float n);
+__device__ double c(int m, float n);
 
 /*
  * theta_approx(double xi, float n, int itr)
@@ -101,7 +82,34 @@ double c(int m, float n);
  * 			Using large values for itr (above ~15) will lead to stack overflows as the 
  * 			implicit tail recursion depth (1MB stack size) is exceeded
  */
-double theta_approx(double xi, float n, int itr);
+__device__ double theta_approx(double xi, float n, int itr);
 
+__device__ void single_polytrope(double* xiL, double* state, long int nXi, int polytropicIndex, double* parsedArgv, int polytropeNumber);
+
+__global__ void distribute_jobs(double* xiL, double* state, long int nXi, int totalModels, int TILELENGTH, double* parsedArgv);
+
+void errorCheck(int code, cudaError_t err);
+
+void int_n_model(double* xiL_H, double* state, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc);
+
+/* rk4(double yN, float h, unsigned long *model, double *argv, int argc)
+ *
+ * Desc: Runge-Kutta Fourth Order integrator
+ * Params:
+ * 		    yN[double]       - current function value
+ * 		    h[float]         - step size
+ *		    model[function*] - pointer to function to integrate
+ *		    argv[double*]    - array of model function arguments
+ *		    argc[int]        - number of arguments in argv
+ * Returns:
+ * 		    yN+1 [double]    - next value of function
+ * Pre-State:
+ * 		    Stateless
+ * Post-State:
+ * 		    Stateless
+ * Exceptions:
+ * 		    No Defined Exceptions
+ */
+__device__ double rk4(double yN, float h, odeModel model, double *argv, int argc);
 
 #endif

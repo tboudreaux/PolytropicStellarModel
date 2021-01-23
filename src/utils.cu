@@ -3,10 +3,9 @@
 #include<fstream>
 #include<complex>
 
-#include"utils.h"
+#include"utils.cuh"
 
 using namespace std;
-typedef double (* odeModel)(double vN, double *argv, int argc);
 
 double* arange(float low, float high, float step){
 	double* ts = NULL;

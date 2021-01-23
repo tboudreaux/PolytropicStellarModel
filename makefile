@@ -1,6 +1,6 @@
-# build C++ version of a lane-emden integrator
-CC = g++
-CFLAGS = -g -Wall
+# build CUDA version of a lane-emden integrator
+CC = nvcc
+CFLAGS = 
 HEADERDIRS = src
 BINDIR = bin
 DATADIR = data
@@ -8,31 +8,20 @@ PSTANOT = 0
 
 default: all
 
-all: lane-emden-nonDegenerate.o lane-emden-degenerate.o utils.o model.o integration.o
+all: lane-emden-nonDegenerate.o utils.o cu_utils.o
 	@mkdir -p $(BINDIR)
 	@mkdir -p $(DATADIR)
-	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-nonDegenerate lane-emden-nonDegenerate.o utils.o model.o integration.o
-	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-degenerate lane-emden-degenerate.o utils.o model.o integration.o
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -o integrate-nonDegenerate lane-emden-nonDegenerate.o utils.o cu_utils.o
 	@mv *.o $(BINDIR)/
-	@mv integrate-nonDegenerate $(BINDIR)/
-	@mv integrate-degenerate $(BINDIR)/
-	@ln -s $(BINDIR)/integrate-nonDegenerate ./integrate-nonDegenerate
-	@ln -s $(BINDIR)/integrate-degenerate ./integrate-degenerate
 	
-lane-emden-nonDegenerate.o: $(HEADERDIRS)/lane-emden-nonDegenerate.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h
-	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden-nonDegenerate.cpp
+lane-emden-nonDegenerate.o: $(HEADERDIRS)/lane-emden-nonDegenerate.cu $(HEADERDIRS)/utils.cuh $(HEADERDIRS)/cu_utils.cuh
+	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden-nonDegenerate.cu
 
-lane-emden-degenerate.o: $(HEADERDIRS)/lane-emden-degenerate.cpp $(HEADERDIRS)/utils.h $(HEADERDIRS)/model.h $(HEADERDIRS)/integration.h
-	$(CC) $(CFLAGS) -D RDATADIR=$(DATADIR) -D PSTANOUT=$(PSTANOT) -I $(HEADERDIRS) -c $(HEADERDIRS)/lane-emden-degenerate.cpp
+utils.o: $(HEADERDIRS)/utils.cu $(HEADERDIRS)/utils.cuh
+	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/utils.cu
 
-utils.o: $(HEADERDIRS)/utils.cpp $(HEADERDIRS)/utils.h
-	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/utils.cpp
-
-model.o: $(HEADERDIRS)/model.cpp $(HEADERDIRS)/model.h
-	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/model.cpp
-
-integration.o: $(HEADERDIRS)/integration.cpp $(HEADERDIRS)/integration.h
-	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/integration.cpp
+cu_utils.o:	$(HEADERDIRS)/cu_utils.cu $(HEADERDIRS)/cu_utils.cuh
+	$(CC) $(CFLAGS) -I $(HEADERDIRS) -c $(HEADERDIRS)/cu_utils.cu
 
 cleanData:
 	@rm -r $(DATADIR)
@@ -42,8 +31,7 @@ data:
 	@mkdir -p $(DATADIR)
 
 clean:
-	@rm integrate-nonDegenerate
-	@rm integrate-degenerate
 	@rm -r $(BINDIR)/
 	@rm -r $(DATADIR)
+	@rm integrate-nonDegenerate
 
