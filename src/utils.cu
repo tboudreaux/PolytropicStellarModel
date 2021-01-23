@@ -28,7 +28,6 @@ double* arange(float low, float high, float step){
 
 void save(const string& filename, double* xiL, double* state, map<string, double> &metadata){
 	ofstream stateFile;
-	int cN;
 	int len = (int)metadata.at("num");
 
 	// cast c++ type string to c type string

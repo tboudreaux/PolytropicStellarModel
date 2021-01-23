@@ -84,12 +84,97 @@ __device__ double c(int m, float n);
  */
 __device__ double theta_approx(double xi, float n, int itr);
 
+/*
+ * single_polytrope(double* xiL, double* state, long int nXi, int polytropicIndex, double* parsedArgv, int polytropeNumber)
+ *
+ * Desc: Compute the solutions to Theta and Theta dot for a single polytropic index, n. Meant to run as a single thread in a warp
+ * Params:
+ *		   xiL[double*]			- List of xi values (same for all n)
+ *		   state[double*]		- Location to save results to
+ *		   nXi[long int]		- Total number of xi values
+ *		   polytropicIndex[int] - polytropic index, n
+ *         parsedArgv[double*]  - list of arguments from command line
+ *         polytropeNumber[int] - Which of the n models is this
+ *
+ * Returns:
+ *		   N/A 
+ * Pre-State:
+ *         N/A
+ * Post-State:
+ *         State array filled with Theta and Theta dot for a single n per thread
+ * Exceptions:
+ *         No defined exceptions
+ *
+ */
 __device__ void single_polytrope(double* xiL, double* state, long int nXi, int polytropicIndex, double* parsedArgv, int polytropeNumber);
 
+/*
+ * distribute_jobs(double* xiL, double* state, long int nXi, int totalModels, int TILELENGTH, double* parsedArgv)
+ *
+ * Desc: Distribute polytrope jobs around to a variety of threads
+ * Params:
+ *		   xiL[double*]			- List of xi values (same for all n)
+ *		   state[double*]		- Location to save results to
+ *		   nXi[long int]		- Total number of xi values
+ *		   totalModels[int]     - Total Number of models to compute
+ *         TILELENGTH[int]      - The CUDA tile length
+ *         parsedArgv[double*]  - list of arguments from command line
+ *
+ * Returns:
+ *		   N/A 
+ * Pre-State:
+ *         N/A
+ * Post-State:
+ *         State array filled with Theta and Theta dot for all requested n
+ * Exceptions:
+ *         No defined exceptions
+ *
+ */
 __global__ void distribute_jobs(double* xiL, double* state, long int nXi, int totalModels, int TILELENGTH, double* parsedArgv);
 
+/*
+ * errorCheck(int code, cudaError_t err)
+ *
+ * Desc: Check if Kernel errors occur and is so alert into User Space
+ * Params:
+ *        code[int]				- User defined code, which error message is what
+ * 		  err[cudaError_t] 		- CUDA function result
+ * Returns:
+ *		  N/A
+ * Pre-State:
+ *		  N/A
+ * Post-State:
+ * 		  N/A
+ * Exceptions:
+ * 		  No defined exceptions
+ *
+ */
 void errorCheck(int code, cudaError_t err);
 
+/*
+ * int_n_model(double* xiL_H, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc)
+ *
+ * Desc: Allocate memory on Device, copy data to and from, and setup kernel
+ * Params:
+ *		   xiL_H[double*]		- List of xi values from host (same for all n)
+ *		   xi0[double]			- Lower bound value on Xi
+ * 		   xif[double]			- Upper bound value on Xi
+ *		   h[double]			- Step size for Xi array
+ *		   models[int]          - Total Number of models to compute
+ *		   nXi[long int]		- Total number of xi values
+ *         parsedArgv[double*]  - list of arguments from command line
+ *		   argc[int]			- Total number of command line arguments provided
+ *
+ * Returns:
+ *		   state[double*]		- Filled array storing Theta and Theta dot for all models 
+ * Pre-State:
+ *         N/A
+ * Post-State:
+ * 		   N/A
+ * Exceptions:
+ *         No defined exceptions
+ *
+ */
 double* int_n_model(double* xiL_H, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc);
 
 /* rk4(double yN, float h, unsigned long *model, double *argv, int argc)

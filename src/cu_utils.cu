@@ -65,6 +65,7 @@ __device__ void single_polytrope(double* xiL, double* state, long int nXi, doubl
 	double h = parsedArgv[1];
 
 
+	// Pointer to the subpart of the array for this thread
 	modelState = state + nXi*2*polytropeNumber;
 	for(int i=0; i<nXi; i++){
 		if (i==0){
@@ -87,7 +88,9 @@ __global__ void distribute_jobs(double* xiL, double* state, long int nXi, int to
 	int polytropeNumber = blockIdx.x*TILELENGTH + threadIdx.x;
 	if (polytropeNumber < totalModels)
 	{
+		// Distribute the polytropic index based on location in Grid
 		float polytropicIndex = (polytropeNumber/(float)totalModels) * 2.0 + 0.1;
+		// Call the single polytrope for this thread
 		single_polytrope(xiL, state, nXi, polytropicIndex, parsedArgv, polytropeNumber);
 	}
 }
@@ -101,23 +104,28 @@ void errorCheck(int code, cudaError_t err)
 }
 
 double* int_n_model(double* xiL_H, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc){
-	double* oList;
-	double* xiList;
-	double* pargv;
+	double* oList; // Output List - To be filled
+	double* xiList;// xi list
+	double* pargv; // command line argument list
+
+	// Allocate and Copy Data from host to device
 	errorCheck(1, cudaMalloc((void **) &xiList, sizeof(double)*(((xif-xi0)/h)+1)));
 	errorCheck(2, cudaMemcpy(xiList, xiL_H, sizeof(double)*(((xif-xi0)/h)+1), cudaMemcpyHostToDevice)); 
 	errorCheck(3, cudaMalloc((void **) &oList, sizeof(double)*nXi*2*models));	
 	errorCheck(4, cudaMalloc((void **) &pargv, sizeof(double)*(argc-1)));
 	errorCheck(5, cudaMemcpy(pargv, parsedArgv, sizeof(double)*(argc-1), cudaMemcpyHostToDevice));	
 
-	int TILELENGTH = 10;
+	// Base the CUDA grid size on the the models requested
+	int TILELENGTH = models;
 	dim3 dimGrid(ceil(models/(float)TILELENGTH), 1, 1);
 	dim3 dimBlock(TILELENGTH, 1, 1);
 
 	distribute_jobs<<<dimGrid, dimBlock>>>(xiList, oList, nXi, models, TILELENGTH, pargv);
+	// Wait for all threads to complete
 	cudaDeviceSynchronize();
 
 	double* state = new double[2*nXi*models];
+	// Copy data from device to host
 	errorCheck(6, cudaMemcpy(state, oList, sizeof(double)*2*nXi*models, cudaMemcpyDeviceToHost));
 	return state;
 }
