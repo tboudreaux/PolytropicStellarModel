@@ -5,6 +5,7 @@
 #include<map>
 
 using namespace std;
+
 /*
  * arange(float low, float high, float step)
  * 

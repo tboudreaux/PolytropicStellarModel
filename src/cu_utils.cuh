@@ -3,26 +3,6 @@
 
 typedef double (* odeModel)(double vN, double *argv, int argc);
 
-/* vdot_nonDegenerate(double vN, double *argv, int argc)
- *
- * Desc: mid-way lane-emden equation of form v'=(-2/\xi)v - \theta^{n}
- * Params:
- * 		     vn[double]    - current value of v in the function
- * 		     argv[double*] - array of model arguments
- * 		     argc[int]     - number of arguments
- * Returns:
- * 		     v'[double]    - the derivitive of the function given above
- * Pre-State:
- * 			 Stateless
- * Post-State:
- * 			 Stateless
- * Exceptions:
- * 			 No Defined Exceptions
- * Notes:
- * 			 argv takes the form [xi_{i}, theta_{i}, n]
- */
-__device__ double vdot_nonDegenerate(double vN, double *argv, int argc);
-
 /*
  * a(int k, float n)
  *
@@ -83,6 +63,27 @@ __device__ double c(int m, float n);
  * 			implicit tail recursion depth (1MB stack size) is exceeded
  */
 __device__ double theta_approx(double xi, float n, int itr);
+
+/* vdot_nonDegenerate(double vN, double *argv, int argc)
+ *
+ * Desc: mid-way lane-emden equation of form v'=(-2/\xi)v - \theta^{n}
+ * Params:
+ * 		     vn[double]    - current value of v in the function
+ * 		     argv[double*] - array of model arguments
+ * 		     argc[int]     - number of arguments
+ * Returns:
+ * 		     v'[double]    - the derivitive of the function given above
+ * Pre-State:
+ * 			 Stateless
+ * Post-State:
+ * 			 Stateless
+ * Exceptions:
+ * 			 No Defined Exceptions
+ * Notes:
+ * 			 argv takes the form [xi_{i}, theta_{i}, n]
+ */
+__device__ double vdot_nonDegenerate(double vN, double *argv, int argc);
+
 
 /*
  * single_polytrope(double* xiL, double* state, long int nXi, int polytropicIndex, double* parsedArgv, int polytropeNumber)

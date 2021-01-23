@@ -40,7 +40,6 @@ __device__ double c(int m, float n){
 
 }
 
-
 __device__ double theta_approx(double xi, float n, int itr){
 	double theta = 0;
 	for (int k=0; k<itr; k++){
@@ -70,7 +69,7 @@ __device__ void single_polytrope(double* xiL, double* state, long int nXi, doubl
 	for(int i=0; i<nXi; i++){
 		if (i==0){
 			// Set the initial theta(xi) value based on the power serise expansion
-			modelState[i*2] = theta_approx(modelState[i*2], polytropicIndex, parsedArgv[4]);
+			modelState[i*2] = theta_approx(modelState[i*2], polytropicIndex, 10);
 		}	
 		else{
 			modelArgv[0] = xiL[i];
@@ -86,6 +85,7 @@ __device__ void single_polytrope(double* xiL, double* state, long int nXi, doubl
 
 __global__ void distribute_jobs(double* xiL, double* state, long int nXi, int totalModels, int TILELENGTH, double* parsedArgv){
 	int polytropeNumber = blockIdx.x*TILELENGTH + threadIdx.x;
+	/* printf("%d out of %d\n", polytropeNumber, totalModels); */
 	if (polytropeNumber < totalModels)
 	{
 		// Distribute the polytropic index based on location in Grid
@@ -116,9 +116,8 @@ double* int_n_model(double* xiL_H, double xi0, double xif, double h, int models,
 	errorCheck(5, cudaMemcpy(pargv, parsedArgv, sizeof(double)*(argc-1), cudaMemcpyHostToDevice));	
 
 	// Base the CUDA grid size on the the models requested
-	int TILELENGTH = models;
-	dim3 dimGrid(ceil(models/(float)TILELENGTH), 1, 1);
-	dim3 dimBlock(TILELENGTH, 1, 1);
+	int TILELENGTH = 10;
+	dim3 dimGrid(ceil(models/(float)TILELENGTH), 1, 1); dim3 dimBlock(TILELENGTH, 1, 1);
 
 	distribute_jobs<<<dimGrid, dimBlock>>>(xiList, oList, nXi, models, TILELENGTH, pargv);
 	// Wait for all threads to complete

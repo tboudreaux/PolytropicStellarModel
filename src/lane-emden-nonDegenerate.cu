@@ -65,6 +65,8 @@ int main(int argc, const char* argv[]){
 	// (hi-low)/step
 	nXi = ((parsedArgv[3]-parsedArgv[2])/parsedArgv[1])+1;
 
+	printf("Total Data Size %f MB\n", (sizeof(double)*nXi*(parsedArgv[4]*2+1))/1000000.0);
+
 	// initialize the 2D array
 	xiL = arange(parsedArgv[2], parsedArgv[3], parsedArgv[1]);
 

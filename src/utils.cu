@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 double* arange(float low, float high, float step){
 	double* ts = NULL;
 	long int size;
