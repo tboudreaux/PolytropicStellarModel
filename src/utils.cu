@@ -26,8 +26,10 @@ double* arange(float low, float high, float step){
 	return ts;
 }
 
-void save(const string& filename, double** state, map<string, double> &metadata){
+void save(const string& filename, double* xiL, double* state, map<string, double> &metadata){
 	ofstream stateFile;
+	int cN;
+	int len = (int)metadata.at("num");
 
 	// cast c++ type string to c type string
 	stateFile.open(filename.c_str());
@@ -35,11 +37,8 @@ void save(const string& filename, double** state, map<string, double> &metadata)
 		stateFile << ">> HEADER" << endl;
 		streamHeader(metadata, stateFile);
 		stateFile << ">> BODY" << endl;
-		// write each sub array in state one at a time
-		for (int col = 0; col < 3; col++){
-			//dump a binary
-			stateFile.write((char*)state[col], ((int)metadata.at("num"))*sizeof(double));
-		}
+		stateFile.write((char*)xiL, len*sizeof(double));
+		stateFile.write((char*)state, 2*len*sizeof(double));
 	}
 	stateFile.close();
 }

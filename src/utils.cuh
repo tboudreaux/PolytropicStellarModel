@@ -42,7 +42,7 @@ double* arange(float low, float high, float step);
  * Exceptions:
  * 			No Defined Exceptions
  */
-void save(const string& filename, double** state, map<string, double> &metadata);
+void save(const string& filename, double* xiL, double* state, map<string, double> &metadata);
 
 /*
  * streamHeader(map<sting, double>, ostream)

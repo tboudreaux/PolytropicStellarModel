@@ -61,24 +61,24 @@ __device__ double vdot_nonDegenerate(double vN, double *argv, int argc){
 
 __device__ void single_polytrope(double* xiL, double* state, long int nXi, double polytropicIndex, double* parsedArgv, int polytropeNumber){
 	__shared__ double modelArgv[3];
-	double* statePtr = NULL;
+	double* modelState = NULL;
 	double h = parsedArgv[1];
 
 
-	statePtr = state + sizeof(double)*nXi*2*polytropeNumber;
+	modelState = state + nXi*2*polytropeNumber;
 	for(int i=0; i<nXi; i++){
 		if (i==0){
 			// Set the initial theta(xi) value based on the power serise expansion
-			state[i*2+1] = theta_approx(state[i*2+0], polytropicIndex, parsedArgv[4]);
+			modelState[i*2] = theta_approx(modelState[i*2], polytropicIndex, parsedArgv[4]);
 		}	
 		else{
 			modelArgv[0] = xiL[i];
-			modelArgv[1] = statePtr[(i-1)*2 + 0];
+			modelArgv[1] = modelState[(i-1)*2];
 			modelArgv[2] = polytropicIndex;
-	/* 		// Integrate with rk4 */
-			statePtr[i*2+1] = rk4(statePtr[(i-1)*2+1], h, (odeModel)vdot_nonDegenerate, modelArgv, 3);
-			statePtr[i*2+0] = statePtr[i*2+1]*h + statePtr[(i-1)*2+0];
-	/* 		// When the dimensionless density goes negative constrain it to zero */
+			// Integrate with rk4
+			modelState[i*2+1] = rk4(modelState[(i-1)*2+1], h, (odeModel)vdot_nonDegenerate, modelArgv, 3);
+			modelState[i*2] = modelState[i*2+1]*h + modelState[(i-1)*2];
+			// When the dimensionless density goes negative constrain it to zero
 		}
 	}
 }
@@ -95,12 +95,12 @@ __global__ void distribute_jobs(double* xiL, double* state, long int nXi, int to
 void errorCheck(int code, cudaError_t err)
 {
     if(err != cudaSuccess) {
-        printf("%s in %s at line %d\n",cudaGetErrorString(err),__FILE__,__LINE__);
+        printf("%s in %s at line %d (ERR NUM %d)\n",cudaGetErrorString(err),__FILE__,__LINE__,code);
         exit(EXIT_FAILURE);
-    }
+	}
 }
 
-void int_n_model(double* xiL_H, double* state, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc){
+double* int_n_model(double* xiL_H, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc){
 	double* oList;
 	double* xiList;
 	double* pargv;
@@ -117,7 +117,9 @@ void int_n_model(double* xiL_H, double* state, double xi0, double xif, double h,
 	distribute_jobs<<<dimGrid, dimBlock>>>(xiList, oList, nXi, models, TILELENGTH, pargv);
 	cudaDeviceSynchronize();
 
-	errorCheck(6, cudaMemcpy(state, oList, sizeof(double)*nXi*2*models, cudaMemcpyDeviceToHost));
+	double* state = new double[2*nXi*models];
+	errorCheck(6, cudaMemcpy(state, oList, sizeof(double)*2*nXi*models, cudaMemcpyDeviceToHost));
+	return state;
 }
 
 __device__ double rk4(double yN, float h, odeModel model, double *argv, int argc){

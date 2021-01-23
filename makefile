@@ -1,6 +1,6 @@
 # build CUDA version of a lane-emden integrator
 CC = nvcc
-CFLAGS = 
+CFLAGS = -lineinfo -g
 HEADERDIRS = src
 BINDIR = bin
 DATADIR = data

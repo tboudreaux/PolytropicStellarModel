@@ -90,7 +90,7 @@ __global__ void distribute_jobs(double* xiL, double* state, long int nXi, int to
 
 void errorCheck(int code, cudaError_t err);
 
-void int_n_model(double* xiL_H, double* state, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc);
+double* int_n_model(double* xiL_H, double xi0, double xif, double h, int models, long int nXi, double* parsedArgv, int argc);
 
 /* rk4(double yN, float h, unsigned long *model, double *argv, int argc)
  *
