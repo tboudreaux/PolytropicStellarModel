@@ -116,7 +116,7 @@ double* int_n_model(double* xiL_H, double xi0, double xif, double h, int models,
 	errorCheck(5, cudaMemcpy(pargv, parsedArgv, sizeof(double)*(argc-1), cudaMemcpyHostToDevice));	
 
 	// Base the CUDA grid size on the the models requested
-	int TILELENGTH = 10;
+	int TILELENGTH = 50;
 	dim3 dimGrid(ceil(models/(float)TILELENGTH), 1, 1); dim3 dimBlock(TILELENGTH, 1, 1);
 
 	distribute_jobs<<<dimGrid, dimBlock>>>(xiList, oList, nXi, models, TILELENGTH, pargv);
