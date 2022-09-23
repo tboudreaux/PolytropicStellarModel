@@ -95,7 +95,7 @@ int main(int argc, const char* argv[]){
 
 	// Generate the metadata hash table for use as the header of the 
 	// save file
-	// map<string, double> metadata;
+	map<string, double> metadata;
 	metadata.insert(pair<string, double>("n", parsedArgv[0]));
 	metadata.insert(pair<string, double>("num", nXi));
 	metadata.insert(pair<string, double>("xi0", parsedArgv[2]));
